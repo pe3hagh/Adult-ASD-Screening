@@ -1,10 +1,7 @@
 import pandas as pd
 from scipy.io import arff
 import numpy as np
-import pylab as pl
-import scipy.optimize as opt
-%matplotlib inline
-import matplotlib.pylab as plt
+
 # Load the ARFF file
 data, meta = arff.loadarff(r"""C:/Users/pe3ha/Downloads/autism+screening+adult(1)/Autism-Adult-Data.arff""")
 
