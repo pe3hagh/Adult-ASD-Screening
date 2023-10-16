@@ -1,1 +1,53 @@
-Missing values
+import pandas as pd
+from scipy.io import arff
+import numpy as np
+import pylab as pl
+import scipy.optimize as opt
+%matplotlib inline
+import matplotlib.pylab as plt
+# Load the ARFF file
+data, meta = arff.loadarff(r"""C:/Users/pe3ha/Downloads/autism+screening+adult(1)/Autism-Adult-Data.arff""")
+
+# Convert the data to a Pandas DataFrame
+df = pd.DataFrame(data)
+# Assuming df is your DataFrame with byte strings
+df = df.applymap(lambda x: x.decode('utf-8') if isinstance(x, bytes) else x)
+
+# replace "?" to NaN
+df.replace("?", np.nan, inplace = True)
+
+#Missing values
+'''missing_percent = (df.isna().mean() * 100).round(2)
+df_missing_percent = pd.concat([df.isna().sum(), missing_percent], axis=1)
+df_missing_percent.columns = ['Missing Values', 'Percentage']
+print(df_missing_percent)'''
+
+#replacing missing values in age with mean
+avg_age = df["age"].astype("float").mean()
+df["age"].fillna(avg_age, inplace=True)
+
+#replacing missing values in ethnicity with Unknown
+'''ethnicity_counts = df['ethnicity'].value_counts()
+print(ethnicity_counts)'''
+df['ethnicity'].fillna('Unknown', inplace=True)
+df['ethnicity'] = df['ethnicity'].replace({'others': 'Others'})
+
+
+
+#dropping age description column
+df = df.drop(columns=['age_desc'])
+
+#replacing missing values in relation with Unknown
+'''relation_count = df['relation'].value_counts()
+print (relation_count)'''
+df['relation'].fillna('Unknown', inplace=True)
+
+# Use the .replace() method to convert "yes" to 1 and "no" to 0 in a specific column
+df['Class/ASD'] = df['Class/ASD'].replace({'YES': 1, 'NO': 0})
+df['jundice'] = df['jundice'].replace({'yes': 1, 'no': 0})
+df['austim'] = df['austim'].replace({'yes': 1, 'no': 0})
+
+df.to_csv('clean_data.csv', index=False)
+
+
+
